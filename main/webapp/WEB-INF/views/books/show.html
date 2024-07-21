@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Book</title>
+</head>
+<body>
+
+<p th:text="${book.getTitle()+', '+book.getAuthor() +', '+book.getPublished()}">VALUE</p>
+
+<br/>
+
+<form th:method="PATCH" th:action="@{/books/{id}/person(id=${book.getBook_id()})}">
+    <div th:if="${book.isInStock()}">
+        <p>This book is free. Who should I assign it to?</p>
+        <label for="person">Choose a person</label>
+        <select th:object="${person}" th:field="*{person_id}" id="person">
+            <option th:each="person : ${people}" th:value="${person.getPerson_id()}"
+                    th:text="${person.getName()+ ' ' +person.getSurname()}"></option>
+        </select>
+
+        <input type="submit" value="Assign a book"/>
+    </div>
+</form>
+
+<form th:method="PATCH" th:action="@{/books/{id}/release(id=${book.getBook_id()})}" >
+    <div th:if="${not book.isInStock()}">
+        <span>The book is now with: </span> <span th:text="${owner.getName() +' '+ owner.getSurname()}">Person Name</span>
+        <input type="submit" value="Release the book"/>
+    </div>
+</form>
+
+
+<br/>
+<hr/>
+
+<a th:href ="@{/books/{id}/edit(id=${book.getBook_id()})}">Edit</a>
+
+<form th:method="DELETE" th:action="@{/books/{id}(id=${book.getBook_id()})}">
+    <input type="submit" value="Delete"/>
+
+</body>
+</html>
