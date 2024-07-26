@@ -1,43 +1,85 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>Book</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .container {
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            background-color: #f9f9f9;
+        }
+
+        .form-container {
+            margin-top: 20px;
+        }
+
+        .form-container label {
+            font-weight: bold;
+        }
+
+        .form-container .btn {
+            margin-top: 20px;
+        }
+
+        .form-error {
+            color: red;
+            margin-top: 5px;
+        }
+    </style>
 </head>
 <body>
 
-<p th:text="${book.getTitle()+', '+book.getAuthor() +', '+book.getPublished()}">VALUE</p>
+<div class="container">
+    <h2 class="text-center mb-4">Book Details</h2>
+    <p class="lead" th:text="${book.getTitle()+', '+book.getAuthor() +', '+book.getPublished()}">VALUE</p>
 
-<br/>
-
-<form th:method="PATCH" th:action="@{/books/{id}/person(id=${book.getBook_id()})}">
-    <div th:if="${book.isInStock()}">
-        <p>This book is free. Who should I assign it to?</p>
-        <label for="person">Choose a person</label>
-        <select th:object="${person}" th:field="*{person_id}" id="person">
-            <option th:each="person : ${people}" th:value="${person.getPerson_id()}"
-                    th:text="${person.getName()+ ' ' +person.getSurname()}"></option>
-        </select>
-
-        <input type="submit" value="Assign a book"/>
+    <div class="form-container">
+        <form th:method="PATCH" th:action="@{/books/{id}/person(id=${book.getId()})}">
+            <div th:if="${book.isInStock()}">
+                <p class="alert alert-info">This book is free. Who should I assign it to?</p>
+                <div class="form-group">
+                    <label for="person">Choose a person:</label>
+                    <select class="form-control" th:object="${person}" th:field="*{id}" id="person">
+                        <option th:each="person : ${people}" th:value="${person.getId()}"
+                                th:text="${person.getName()+ ' ' +person.getSurname()}"></option>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary">Assign a book</button>
+            </div>
+        </form>
     </div>
-</form>
 
-<form th:method="PATCH" th:action="@{/books/{id}/release(id=${book.getBook_id()})}" >
-    <div th:if="${not book.isInStock()}">
-        <span>The book is now with: </span> <span th:text="${owner.getName() +' '+ owner.getSurname()}">Person Name</span>
-        <input type="submit" value="Release the book"/>
+    <div class="form-container">
+        <form th:method="PATCH" th:action="@{/books/{id}/release(id=${book.getId()})}">
+            <div th:if="${not book.isInStock()}">
+                <p class="alert alert-warning">
+                    The book is now with: <span th:text="${owner.getName() +' '+ owner.getSurname()}">Person Name</span>
+                </p>
+                <button type="submit" class="btn btn-danger">Release the book</button>
+            </div>
+        </form>
     </div>
-</form>
 
+    <hr/>
 
-<br/>
-<hr/>
+    <div class="form-container">
+        <a class="btn btn-secondary" th:href="@{/books/{id}/edit(id=${book.getId()})}">Edit</a>
 
-<a th:href ="@{/books/{id}/edit(id=${book.getBook_id()})}">Edit</a>
+        <form th:method="DELETE" th:action="@{/books/{id}(id=${book.getId()})}" class="d-inline">
+            <button type="submit" class="btn btn-danger">Delete</button>
+        </form>
+    </div>
+</div>
 
-<form th:method="DELETE" th:action="@{/books/{id}(id=${book.getBook_id()})}">
-    <input type="submit" value="Delete"/>
-
+<!-- Bootstrap JS and dependencies -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>

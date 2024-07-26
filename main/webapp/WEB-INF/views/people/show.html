@@ -3,36 +3,52 @@
 <head>
     <meta charset="UTF-8">
     <title>Person</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .book-table td {
+            padding: 10px;
+        }
+    </style>
 </head>
 <body>
-<p th:text="${person.getName() +' '+person.getSurname()+ ', ' + person.getAge()}">VALUE</p>
-<p th:text="${'Email: ' + person.getEmail()}">VALUE</p>
-<p th:text="${'Address: ' + person.getAddress()}">VALUE</p>
-<p th:text="${person.getPerson_id()}">VALUE</p>
+<div class="container mt-5">
+    <h1 class="mb-4">Person Details</h1>
+    <p th:text="${person.getName() +' '+person.getSurname()+ ', ' + person.getAge()}">VALUE</p>
+    <p th:text="${'Email: ' + person.getEmail()}">VALUE</p>
+    <p th:text="${'Address: ' + person.getAddress()}">VALUE</p>
+    <p th:text="${person.getId()}">VALUE</p>
 
-<br/>
+    <div th:if="${books.isEmpty()}">
+        <p class="text-muted">The person has not taken any books yet</p>
+        <hr/>
+    </div>
 
+    <div th:if="${!books.isEmpty()}">
+        <hr/>
+        <h3>Books:</h3>
+        <table class="table table-striped book-table" th:each="book : ${books}">
+            <tr th:if="${!book.getDelay()}">
+                <td style="color: red" th:text="${book.getTitle() + ', ' + book.getAuthor() + ', ' + book.getPublished()}">book</td>
+            </tr>
+            <tr th:if="${book.getDelay()}">
+                <td th:text="${book.getTitle() + ', ' + book.getAuthor() + ', ' + book.getPublished()}">book</td>
+            </tr>
+        </table>
+        <hr/>
+    </div>
 
-<div th:if="${books.isEmpty()}">
-    <p>The man has not taken any books yet</p>
-    <hr/>
+    <div class="action-links">
+        <a class="btn btn-primary" th:href="@{/people/{id}/edit(id=${person.getId()})}">Edit</a>
+        <form th:method="DELETE" th:action="@{/people/{id}(id=${person.getId()})}" style="display:inline;">
+            <input type="submit" class="btn btn-danger" value="Delete"/>
+        </form>
+    </div>
 </div>
 
-<div th:if="${!books.isEmpty()}">
-    <hr/>
-    <b>Books:</b>
-    <br/>
-    <table th:each="book : ${books}">
-        <tr th:text="${book.getTitle() + ', ' + book.getAuthor() + ', ' + book.getPublished()}">book</tr>
-    </table>
-    <hr/>
-</div>
-
-
-<a th:href="@{/people/{id}/edit(id=${person.getPerson_id()})}">Edit</a>
-
-<form th:method="DELETE" th:action="@{/people/{id}(id=${person.getPerson_id()})}">
-    <input type="submit" value="Delete"/>
-</form>
+<!-- Bootstrap JS and dependencies -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>

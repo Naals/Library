@@ -3,20 +3,48 @@
 <head>
     <meta charset="UTF-8">
     <title>Books</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .book-list a {
+            display: block;
+            margin: 10px 0;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        .book-list a:hover {
+            background-color: #f0f0f0;
+        }
+
+        .action-links a {
+            margin-right: 15px;
+        }
+    </style>
 </head>
 <body>
 
-<div th:each="book: ${books}">
-    <a th:href="@{/books/{id}(id=${book.getBook_id()})}"
-    th:text="${book.getTitle()+', '+book.getAuthor() +', '+book.getPublished()}"/>
+<div class="container mt-5">
+    <h1 class="mb-4">Books</h1>
+
+    <div class="book-list" th:each="book : ${books}">
+        <a th:href="@{/books/{id}(id=${book.getId()})}"
+           th:text="${book.getTitle() + ', ' + book.getAuthor() + ', ' + book.getPublished()}"></a>
+    </div>
+
+    <hr class="my-4"/>
+
+    <div class="action-links">
+        <a class="btn btn-primary" href="/books/search">Search</a>
+        <a class="btn btn-success" href="/books/new">Create new Book</a>
+    </div>
 </div>
 
-
-
-<br/>
-<hr/>
-
-<a href="/books/new">Create new Book</a>
-
+<!-- Bootstrap JS and dependencies -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>

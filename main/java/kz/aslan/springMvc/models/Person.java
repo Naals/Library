@@ -1,29 +1,48 @@
 package kz.aslan.springMvc.models;
 
+import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
+import org.hibernate.annotations.Cascade;
 
+import java.util.List;
+import java.util.Objects;
+
+@Entity
+@Table(name="Person")
 public class Person {
-    private int person_id;
+    @Id
+    @Column(name="id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int id;
     @NotNull(message = "The name should not be empty.")
     @Size(min=2, max=30, message = "The size of name should be between 2 and 30.")
+    @Column(name="name")
     private String name;
 
     @NotNull(message = "The surname should not be empty.")
     @Size(min=2, max=30, message = "The size of name should be between 2 and 30.")
+    @Column(name="surname")
     private String surname;
     @Min(value = 0, message = "Age should be greater than 0")
+    @Column(name="age")
     private int age;
     @NotEmpty(message = "Should be not empty")
     @Email(message = "Should be the valid")
+    @Column(name="email")
     private String email;
 
     @Pattern(regexp = "[A-Z]\\w+, [A-Z]\\w+, \\d{6}",message = "Your address should be in this format: Country, City, Postal Code (6 digits)")
+    @Column(name="address")
     private String address;
+
+    @OneToMany(mappedBy = "owner",fetch = FetchType.EAGER)
+    @Cascade(org.hibernate.annotations.CascadeType.SAVE_UPDATE)
+    private List<Book> books;
     public Person(){
     }
 
-    public Person(int person_id, String name, String surname, int age, String email, String address) {
-        this.person_id = person_id;
+    public Person(int id, String name, String surname, int age, String email, String address) {
+        this.id = id;
         this.name = name;
         this.surname=surname;
         this.age = age;
@@ -47,12 +66,12 @@ public class Person {
         this.surname = surname;
     }
 
-    public int getPerson_id() {
-        return person_id;
+    public int getId() {
+        return id;
     }
 
-    public void setPerson_id(int id) {
-        this.person_id = id;
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getName() {
@@ -77,5 +96,26 @@ public class Person {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public List<Book> getBooks() {
+        return books;
+    }
+
+    public void setBooks(List<Book> books) {
+        this.books = books;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Person person = (Person) o;
+        return id == person.id && age == person.age && Objects.equals(name, person.name) && Objects.equals(surname, person.surname) && Objects.equals(email, person.email) && Objects.equals(address, person.address);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, surname, age, email, address);
     }
 }
